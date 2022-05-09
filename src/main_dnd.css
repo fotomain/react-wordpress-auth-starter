@@ -1,0 +1,62 @@
+
+/*.overlay9class{*/
+
+/*}*/
+/*.overlay9class-draggable-dragging {*/
+/*    background: #8b0000 !important;*/
+/*}*/
+
+#container5 {
+    position: relative;
+    margin-top:20px;
+    border: 3px solid blueviolet;
+    height:150px;
+}
+#canvas5, #overlay5 {
+    position: absolute;
+}
+
+#overlay5, #overlay9 {
+
+    height: 30px;
+    width:  30px;
+    border: 3px solid white;
+    border-radius: 50%;
+    /*opacity: 0;*/
+    /*background-color:transparent;*/
+
+}
+
+#overlay9{
+
+    margin-top:40px;
+
+}
+
+#canvas5  {
+    border: 3px solid yellow;
+    height:100px;
+    width:100px;
+}
+
+/*===============*/
+
+#container9 {
+    position: relative;
+    margin-top:20px;
+    border: 3px solid teal;
+    height:150px;
+}
+#canvas9  {
+    border: 3px solid orangered;
+    height:100px;
+    width:100px;
+}
+
+#canvas9, #overlay9 {
+    position: absolute;
+}
+
+.svg1 {
+    position: absolute;
+}

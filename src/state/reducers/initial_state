@@ -1,0 +1,29 @@
+
+const initialState = {
+    isLoading: false,
+    // TODO
+
+    products: [],
+    projects: [],
+    project_tasks: [],
+
+    // #3_SAGA2
+    user_guid: null,
+    user_token: null,
+
+    user_description: null,
+    user_was_found_in_db: false,
+    user_connection_guid: null,
+    user_connection_guid_actual_from_server: null,
+
+
+    work_projects: false,
+    work_project_tasks: false,
+    work_project_task_actions: false,
+    work_task_action_analytics_texts: false,
+    work_data_ready: false,
+
+    error: null,
+};
+
+export  default initialState;

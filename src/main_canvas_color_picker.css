@@ -1,0 +1,240 @@
+
+body {
+    /*background: #55ead6;*/
+    background: #e2eeed;
+    font-family: "Proxima Nova", sans-serif;
+    /*color: #8b949a;*/
+    letter-spacing: 0.05em;
+    transition: background 0.5s ease;
+}
+
+/* Some basic styles to keep everything in place */
+body {padding: 0; margin: 0; overflow: hidden; }
+
+#canvas {cursor: none;}
+
+#color-input {
+    display: none;
+}
+
+#color-label {
+    /*margin-left: 45px;*/
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
+#color-input:checked ~ #color-picker {
+    opacity: 1;
+}
+
+
+#color-picker {
+    position: absolute;
+    margin-left:45px;
+    left: 70px;
+    background-color: white;
+    /*   height: 150px;
+      width: 185px;  */
+    /*   border: solid 1px #ccc; */
+    opacity: 0;
+    /*   padding: 5px; */
+}
+
+/*#color-strip{*/
+/*}*/
+
+/*===========*/
+/*=========== PANEL */
+/*===========*/
+
+.color-picker-panel {
+    /*background: rgba(64, 144, 144, 0.81);*/
+    /*border: 2px solid #42ffd3;*/
+    width: 300px;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .4);
+
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    padding-left:   5px;
+    padding-right:  5px;
+}
+
+.ok-row {
+    /*border: 1px solid;*/
+    margin: 0 10px 10px;
+
+    position: relative;
+    /*margin: 0 10px 10px;*/
+    width: 100%;
+    height:3rem;
+
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items:center;
+
+    margin-top:0.5rem;
+
+}
+
+.ok-legend {
+    color:blue;
+    border-color:blue;
+}
+
+.ok-legend-no-bordered {
+    color:transparent;
+    border-color:transparent;
+}
+
+.ok-row-item {
+    /*border: 1px solid;*/
+    position: relative;
+    /*margin: 0 10px 10px;*/
+    width: 100%;
+    height:100%;
+
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items:center;
+}
+
+.button_ok {
+
+    /*justify-self: center;*/
+    /*margin-left: 15%;*/
+    width: 100%;
+    height:100%;
+    background-color: blue;
+    color: white;
+   ;
+
+    border-radius: 15%;
+
+}
+
+
+.panel-row {
+    position: relative;
+    margin: 0 10px 10px;
+}
+/*===========*/
+/*=========== CANVAS */
+/*===========*/
+
+.all-canvas-row {
+    /*border: 1px solid;*/
+    position: relative;
+    /*margin: 0 10px 10px;*/
+    width: 100%;
+    height:230px;
+
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+
+}
+
+
+.spectrum-map {
+    position: relative;
+    /*like canvas*/
+    width:  220px;
+    height: 220px;
+    overflow: hidden;
+}
+
+.spectrum_canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+}
+
+.hue-map {
+    position: absolute;
+    /*top: 10px;*/
+    /*bottom: 5px;*/
+
+    right: 40px;
+
+    /*like canvas*/
+    width: 40px;
+    height: 220px;
+
+}
+
+.hue_canvas {
+    border-radius: 8px;
+    margin-left:20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    background: #ccc;
+}
+
+
+/*===========*/
+/*=========== INPUT */
+/*===========*/
+
+.value-fields {
+    display: none;
+    align-items: center;
+}
+.value-fields.active {
+    display: flex;
+}
+.value-fields .field-label {
+    margin-right: 0px;
+}
+.value-fields .field-input {
+    background: #15191c;
+    border: 1px solid #364347;
+    box-sizing: border-box;
+    border-radius: 2px;
+    line-height: 38px;
+    /*padding: 0 4px;*/
+    text-align: center;
+    color: #8b949a;
+    font-size: 1rem;
+    display: block;
+}
+.rgb-fields .field-group {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+.rgb-fields .field-input {
+    width: 60px;
+    margin-right: 0.5rem;
+}
+.hex-field .field-input {
+    width: 170px;
+}
+
+.rgb-legend {
+    margin-top: 2rem;
+    color:blue;
+
+    border-color:transparent;
+    /*border-left:none;*/
+    /*border-right:none;*/
+    /*border-bottom:none;*/
+}

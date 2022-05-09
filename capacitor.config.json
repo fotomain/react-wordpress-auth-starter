@@ -1,0 +1,10 @@
+{
+  "appId": "com.ioapp1.aoo",
+  "appName": "ioapp1",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "server": {
+
+    "cleartext": true
+  }
+}
