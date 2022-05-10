@@ -8,7 +8,6 @@ import api from 'wordpress-rest-api-oauth-1'
 // ionic build --prod; ionic cap sync --prod;
 // ionic serve
 
-
 class App extends React.Component {
     constructor(props) {
         super();
