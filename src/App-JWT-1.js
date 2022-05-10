@@ -57,24 +57,23 @@ class App extends React.Component {
             console.log(111)
 
             const root1 = 'https://antinedoebit.com'
-            // https://antinedoebit.com/wp-json/jwt-auth/v1/token
 
-            try {
-                console.log(222)
-                //=== https://wp-oauth.com/docs/general/grant-types/?utm_source=plugin-admin&utm_medium=settings-page
-                const ret1 = await  fetch(
-                    {  input:root1+'/authorize',
-                        data:
-                            {
-                                client_id:'eSBIMiKRFzqHPtRryIyzXxMAdV8Mee13zvtndeYa',
-                                client_secret:'wYsUiKr9WWe1LYf2Wv3d78j7HWJS1BIBJabNLDzL',
-                            }
-                    }
-                );
-                console.log(ret1)
-            } catch (error) {
-                console.log('ret1 error', error.message);
-            }
+             try {
+                 console.log(222)
+                 //=== https://wp-oauth.com/docs/general/grant-types/?utm_source=plugin-admin&utm_medium=settings-page
+                 const ret1 = await  fetch(
+                     {  input:root1+'/authorize',
+                                data:
+                                {
+                                    client_id:'eSBIMiKRFzqHPtRryIyzXxMAdV8Mee13zvtndeYa',
+                                    client_secret:'wYsUiKr9WWe1LYf2Wv3d78j7HWJS1BIBJabNLDzL',
+                                }
+                         }
+                     );
+                 console.log(ret1)
+             } catch (error) {
+                 console.log('ret1 error', error.message);
+             }
 
         }
 
@@ -88,7 +87,7 @@ class App extends React.Component {
 
         return (
             <div>
-                <div>class App</div>
+            <div>class App</div>
 
                 <Button onClick={(e)=>this.doApi(e)} variant={`contained`}>DO API</Button>
 
