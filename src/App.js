@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 
+//=== DOC 12min https://www.youtube.com/watch?v=fFNXWinbgro
 // yarn  install; yarn start
 
 // ionic build --prod; ionic cap sync --prod; ionic serve
