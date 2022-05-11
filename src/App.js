@@ -50,73 +50,6 @@ class App extends React.Component {
 
     }
 
-    crud_create_WooCommerce_Order() {
-
-
-        const url_root = "https://antinedoebit.com/"
-
-        var api_WooCommerceAPI = new WooCommerceAPI({
-            url: url_root,
-            // consumerKey:    "8hBZ83mWd9pC",
-            // consumerSecret: "RsDc0CMLDwnb2Qct59StQcO4N9cEEKBLbkC0FXo5NzsunzMP",
-            consumerKey: "ck_3b027d8d4737ef55b5ecdff4f6421116c117120c",
-            consumerSecret: "cs_eed62fa1661ab15d570cdbb2f0cf07bd9b85e129",
-            wp_api: true,
-            // version: 'v2',
-            version: 'wc/v3',
-            queryStringAuth: true
-        });
-
-        const data = {
-            _method: "POST",
-            // payment_method: "bacs",
-            // payment_method_title: "Direct Bank Transfer",
-            // set_paid: true,
-            billing: {
-                first_name: "John",
-                last_name: "Doe",
-                // address_1: "969 Market",
-                // address_2: "",
-                // city: "San Francisco",
-                // state: "CA",
-                // postcode: "94103",
-                // country: "US",
-                email: "john.doe@example.com",
-                phone: "(555) 555-5555"
-            },
-            // shipping: {
-            //     first_name: "John",
-            //     last_name: "Doe",
-            //     address_1: "969 Market",
-            //     address_2: "",
-            //     city: "San Francisco",
-            //     state: "CA",
-            //     postcode: "94103",
-            //     country: "US"
-            // },
-            line_items: [
-                {
-                    product_id: 11303,
-                    quantity: 2
-                }
-            ],
-            shipping_lines: [
-                {
-                    method_id: "flat_rate",
-                    method_title: "Flat Rate",
-                    total: "10.00"
-                }
-            ]
-        };
-
-        const ret1 = api_WooCommerceAPI.post("orders", data)
-
-        console.log("=== orders ret1 ")
-        console.log(ret1)
-        return ret1;
-
-    }
-
 
     crud_create_WooCommerce_Product() {
 
@@ -159,15 +92,53 @@ class App extends React.Component {
             }
 
 
+
     doApi_WooCommerce_Order(e) {
+        this.crud_create_WooCommerce_Order()
+    }
 
-        console.log("=== data_json START")
+    crud_create_WooCommerce_Order() {
 
-        const data_json = this.crud_create_WooCommerce_Order();
+        async function postData(url = '', data = {}) {
 
-        console.log(data_json)
+            let headers1 = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjE5MzY5NywibmJmIjoxNjUyMTkzNjk3LCJleHAiOjE2NTI3OTg0OTcsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.9HKUgbCaEdCpzJia6-FKHSaFA1-yBUlcGPKMWdZDrFY'
+            }
 
-        console.log("=== data_json FINISH")
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: headers1,
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+        const url_root="https://antinedoebit.com/wp-json/wc/v2/orders"
+        postData(url_root, {
+            "billing": {
+                "first_name": "John " + Date.now().toString(),
+                "last_name": "Doe",
+                "email": "john.doe@example.com",
+                "phone": "(555) 555-5555"
+            },
+            "line_items": [
+                {
+                    "product_id": 11303,
+                    "quantity": 2
+                }
+            ]
+        })
+            .then(data => {
+                console.log("=== data orders");
+                console.log(data);
+            });
+
 
     }
 
