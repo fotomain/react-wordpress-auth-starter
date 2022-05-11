@@ -35,6 +35,9 @@ class App extends React.Component {
 
     componentDidMount() {
         console.log('=== componentDidMount'+Date.now())
+
+        //TODO PREFLY TO GET TOKEN !!!!!!!!!!!!!
+
         // period set
         // this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
 
@@ -154,7 +157,7 @@ class App extends React.Component {
 
     }
 
-    doApi(e) {
+    doApi_books_fetch(e) {
 
         async function postData(url = '', data = {}) {
 
@@ -191,7 +194,7 @@ class App extends React.Component {
 
     }
 
-    doApi_axios(e) {
+    doApi_books_axios(e) {
 
         const url_root="https://antinedoebit.com/wp-json/wp/v2/books"
 
@@ -228,7 +231,7 @@ class App extends React.Component {
                 <Books/>
 
                 <h3>Add Book</h3>
-                <Button onClick={(e)=>this.doApi(e)} variant={`contained`}>DO API</Button>
+                <Button onClick={(e)=>this.doApi_books_fetch(e)} variant={`contained`}>DO API</Button>
                 <h3>Add Product</h3>
                 <Button onClick={(e)=>this.doApi_WooCommerce_Product(e)} variant={`contained`}>DO API</Button>
                 <h3>Add Order</h3>
