@@ -1,5 +1,5 @@
 import React from "react";
-import App from "./App";
+import App from "../src/App";
 
 // https://www.freecodecamp.org/news/reactjs-implement-drag-and-drop-feature-without-using-external-libraries-ad8994429f1a/
 
