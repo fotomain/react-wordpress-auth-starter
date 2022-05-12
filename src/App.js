@@ -6,7 +6,12 @@
 //cool DOC from: https://www.youtube.com/watch?v=fFNXWinbgro
 //===================================================
 //=============== HOW TO RUN THIS PROJECT ===========
-// yarn  install; yarn start
+//===================================================
+// make the file with your keys './api_keys' near App.js
+    // export const process_JWT_PATH_TO_TOKEN  = 'https://ddddddddddddddddddd';
+    // export const process_JWT_USERNAME       = 'ddddddd';
+    // export const process_JWT_PASSWORD       = 'dddddddddd';
+// yarn  install
 // ionic build prod; ionic cap sync; ionic serve
 
 import React, {Component} from 'react'
@@ -18,7 +23,7 @@ import WooCommerceAPI from "./WooCommerceRESTAPI"; // NOT WORK PARALLEL JWT IN h
 import {
     process_JWT_PATH_TO_TOKEN,
     process_JWT_USERNAME,
-    process_JWT_password, process_JWT_PASSWORD,
+    process_JWT_PASSWORD,
 } from './api_keys';
 
 // yarn  install; yarn start
