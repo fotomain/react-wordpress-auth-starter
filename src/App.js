@@ -52,84 +52,64 @@ class App extends React.Component {
         super();
     }
 
-    componentDidMount() {
+    headers1_base = {
+        'Content-Type': 'application/json',
+    }
+
+    async componentDidMount() {
         console.log('=== componentDidMount'+Date.now())
 
-        //TODO PREFLY TO GET TOKEN !!!!!!!!!!!!!
-
-        async function postData(url = '', data = {}) {
-
-            let headers1 = {
-                'Content-Type': 'application/json',
-
-            }
-
-            const response = await fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: headers1,
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            }).then(response => {
-                console.log("=== response.json() books")
-                console.log(response)
-                return response
-            }).catch(err=>{
-                console.log("=== err books")
-                console.log(err.message)
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-
-        const url_root = process_JWT_PATH_TO_TOKEN
-
         const data1 = {
+            //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
+            _method: "POST",
             "username":process_JWT_USERNAME,
             "password":process_JWT_PASSWORD,
         }
 
-        postData(url_root, data1)
+        const url_root = process_JWT_PATH_TO_TOKEN
+
+        const ret1 = await this.postData1(this.fetch_main, this.headers1_base, url_root, data1)
             .then(data => {
                 console.log("=== data " + url_root);
                 console.log(data);
-                console.log("=== TOKEN");
-                console.log(data.token);
-
-                this.headers1_with_bearer = {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + data.token
-                }
 
                 this.setState({
                     jwt_bearer:data.token,
-                    done_TOKEN:true
+                    done_TOKEN:true,
                 },()=>{})
+
+                const t_headers1_with_bearer = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + data.token
+                }
+                return t_headers1_with_bearer;
+
+            }).catch(err=>{
+                console.log("=== err  " + url_root)
+                console.log(err.message)
             });
 
+        this.headers1_with_bearer = ret1;
+        console.log("=== this.headers1_with_bearer")
+        console.log(this.headers1_with_bearer)
 
         const data1admin = {
+            _method: "POST",
             "username":process_JWT_USERNAME_ADMIN,
             "password":process_JWT_PASSWORD_ADMIN,
         }
 
-        postData(url_root, data1admin)
+        this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1admin)
             .then(data => {
                 console.log("=== data admin " + url_root);
                 console.log(data);
                 console.log("=== TOKEN ADMIN");
                 console.log(data.token);
-                this.setState({jwt_bearer_admin:data.token})
+                this.setState({
+                    jwt_bearer_admin:data.token,
+                    done_TOKEN_ADMIN:true
+                })
             });
-
-        this.setState ({done_TOKEN_ADMIN:true},()=>{})
-
-
-        // process_JWT_USERNAME_ADMIN process_JWT_PASSWORD_ADMIN
-
 
         // period set
         // this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
@@ -188,7 +168,7 @@ class App extends React.Component {
             }
 
 
-    crud_create_WooCommerce_User() {
+    crud_create_WordPress_User() {
 
         async function postData(url = '', data = {}, jwt_bearer) {
 
@@ -238,8 +218,8 @@ class App extends React.Component {
 
     }
 
-    doApi_WooCommerce_User(e) {
-        this.crud_create_WooCommerce_User()
+    doApi_WordPress_User(e) {
+        this.crud_create_WordPress_User()
     }
 
     doApi_WooCommerce_Order(e) {
@@ -258,6 +238,7 @@ class App extends React.Component {
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
     }
+
 
     async postData1(f_fetch, headers1, url = '', data = {}) {
         const response = await f_fetch({url:url,data:data,headers:headers1});
@@ -281,9 +262,7 @@ class App extends React.Component {
                     "quantity": 2
                 }
             ]
-        },
-
-            this.state.jwt_bearer
+        }
         )
             .then(data => {
                 console.log("=== data " + url_root);
@@ -311,29 +290,6 @@ class App extends React.Component {
 
     doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e) {
 
-        async function postData(url = '', data = {}, jwt_bearer) {
-
-            let headers1 = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + jwt_bearer
-
-            }
-
-            const response = await this.fetch_main({url:url,data:data,headers:headers1})
-            .then(response => {
-                console.log("=== response.json() books")
-                console.log(response)
-                return response
-            }).catch(err=>{
-                console.log("=== err books")
-                console.log(err.message)
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-
-        const url_root = process_URL_ROOT_APP+"/wp-json/wc/v2/products"
-
         const data1 = {
             //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
             _method: "POST",
@@ -348,13 +304,14 @@ class App extends React.Component {
             short_description: "Pellentesque habitant morbi ",
         }
 
-        postData(url_root, data1, this.state.jwt_bearer)
+        const url_root = process_URL_ROOT_APP+"/wp-json/wc/v2/products"
+
+        this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1)
             .then(data => {
                 console.log("=== data " + url_root);
                 console.log(data);
+                this.setState ({done_doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce:true})
             });
-
-        this.setState ({done_doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce:true})
 
     }
 
@@ -443,7 +400,7 @@ class App extends React.Component {
                 <br></br>
                 <br></br>
                 <h3>Add User</h3>
-                <Button onClick={(e)=>this.doApi_WooCommerce_User(e)} variant={`contained`}>DO API</Button>
+                <Button onClick={(e)=>this.doApi_WordPress_User(e)} variant={`contained`}>DO API</Button>
 
                 <h5>{JSON.stringify(this.state)}</h5>
 
