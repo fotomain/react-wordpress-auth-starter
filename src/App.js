@@ -1,11 +1,19 @@
 
 
-//react-wordpress-woocommerce-jwt-starter
+//react-wordpress-woocommerce-rest-api-jwt-starter
+//WORDPRESS JWT SERVER = JWT Authentication for WP REST API
+//                       By Enrique Chavez
+//cool DOC from: https://www.youtube.com/watch?v=fFNXWinbgro
+//===================================================
+//=============== HOW TO RUN THIS PROJECT ===========
+// yarn  install; yarn start
+// ionic build prod; ionic cap sync; ionic serve
+
 import React, {Component} from 'react'
 
 import axios from 'axios';
 
-import WooCommerceAPI from "./WooCommerceRESTAPI";
+import WooCommerceAPI from "./WooCommerceRESTAPI"; // NOT WORK PARALLEL JWT IN hostinger.com
 
 import {
     process_JWT_PATH_TO_TOKEN,
@@ -13,21 +21,14 @@ import {
     process_JWT_password, process_JWT_PASSWORD,
 } from './api_keys';
 
-//=== SNIPETS
-// rcjc
-// Ctrl+J and choose the relevant snippet
-//=== DOC 12min https://www.youtube.com/watch?v=fFNXWinbgro
 // yarn  install; yarn start
-// it's it's aim aim aim
+// ionic build prod; ionic cap sync; ionic serve
 
 // ionic build --prod; ionic cap sync --prod; ionic serve
 // ionic build --prod; ionic cap sync --prod;
 // cd react-wordpress-auth-starter
-// ionic build prod; ionic cap sync; ionic serve
 // ionic serve
 
-// yarn remove '@material'
-// yarn remove '@material-ui'
 
 import Books from './Books'
 
