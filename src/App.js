@@ -7,11 +7,11 @@
 //=============== HOW TO RUN THIS PROJECT ===========
 //===================================================
 // make the file with your keys './api_keys' near App.js
-    // export const process_JWT_PATH_TO_TOKEN  = 'https://ddddddddddddddddddd';
-    // export const process_JWT_USERNAME       = 'ddddddd';
-    // export const process_JWT_PASSWORD       = 'dddddddddd';
-    // export const process_JWT_USERNAME_ADMIN
-    // export const process_JWT_PASSWORD_ADMIN
+// export const process_JWT_PATH_TO_TOKEN  = 'https://ddddddddddddddddddd';
+// export const process_JWT_USERNAME       = 'ddddddd';
+// export const process_JWT_PASSWORD       = 'dddddddddd';
+// export const process_JWT_USERNAME_ADMIN
+// export const process_JWT_PASSWORD_ADMIN
 
 // yarn  install
 // ionic build prod; ionic cap sync; ionic serve
@@ -155,27 +155,27 @@ class App extends React.Component {
 
 
         const data = {
-                    //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
-                    _method: "POST",
-                    //Strong!
-                    sku: Date.now().toString(),
-                        // ,
-                    name: "555 Premium Quality " + Date.now().toString(),
-                    type: "simple",
-                    slug: "prod555",
-                    regular_price: "21.99",
-                    description: "Pellentesque habitant morbi tristique senectus",
-                    short_description: "Pellentesque habitant morbi ",
-                }
+            //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
+            _method: "POST",
+            //Strong!
+            sku: Date.now().toString(),
+            // ,
+            name: "555 Premium Quality " + Date.now().toString(),
+            type: "simple",
+            slug: "prod555",
+            regular_price: "21.99",
+            description: "Pellentesque habitant morbi tristique senectus",
+            short_description: "Pellentesque habitant morbi ",
+        }
 
-                const ret1 = api_WooCommerceAPI.post("products", data)
+        const ret1 = api_WooCommerceAPI.post("products", data)
 
 
-                console.log("=== products ret1 ")
-                console.log(ret1)
-                return ret1;
+        console.log("=== products ret1 ")
+        console.log(ret1)
+        return ret1;
 
-            }
+    }
 
 
     crud_create_WordPress_User() {
@@ -241,19 +241,19 @@ class App extends React.Component {
         const url_root = process_URL_ROOT_APP + "/wp-json/wc/v2/orders"
 
         this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, {
-            "billing": {
-                "first_name": "John " + Date.now().toString(),
-                "last_name": "Doe",
-                "email": "john.doe@example.com",
-                "phone": "(555) 555-5555"
-            },
-            "line_items": [
-                {
-                    "product_id": 11303,
-                    "quantity": 2
-                }
-            ]
-        }
+                "billing": {
+                    "first_name": "John " + Date.now().toString(),
+                    "last_name": "Doe",
+                    "email": "john.doe@example.com",
+                    "phone": "(555) 555-5555"
+                },
+                "line_items": [
+                    {
+                        "product_id": 11303,
+                        "quantity": 2
+                    }
+                ]
+            }
         )
             .then(data => {
                 console.log("=== data " + url_root);
@@ -316,24 +316,24 @@ class App extends React.Component {
                 'Authorization': 'Bearer ' + jwt_bearer
             }
 
-                const response = await this.fetch_main({url:url,data:data,headers:headers1})
+            const response = await this.fetch_main({url:url,data:data,headers:headers1})
                 .then(response => {
-                console.log("=== response.json() books")
-                console.log(response)
-                return response
-            }).catch(err=>{
-                console.log("=== err books")
-                console.log(err.message)
-            });
+                    console.log("=== response.json() books")
+                    console.log(response)
+                    return response
+                }).catch(err=>{
+                    console.log("=== err books")
+                    console.log(err.message)
+                });
             return response.json(); // parses JSON response into native JavaScript objects
         }
 
         const url_root = process_URL_ROOT_APP+"/wp-json/wp/v2/books"
         postData(url_root, {
-            "title":"book 333 " + Date.now().toString(),
-            "content":"content 333",
-            "status":"publish"
-        },
+                "title":"book 333 " + Date.now().toString(),
+                "content":"content 333",
+                "status":"publish"
+            },
             this.state.jwt_bearer
         )
             .then(data => {
@@ -370,9 +370,56 @@ class App extends React.Component {
 
     }
 
+    uploadFiles = (files) => {
+        console.log("Uploading file...");
+        for (let i = 0; i < files.length; i++) {
+
+            // formData.append(files[i].name, files[i])
+
+            var fileReader = new FileReader();
+
+            var file = files[i]
+            fileReader.onload = (function(f) {
+                return function(e) {
+                    // Here you can use `e.target.result` or `this.result`
+                    // and `f.name`.
+
+                    var text = e.target.result;
+                    //do something with text
+                    // !!! document.body.innerHTML = text;
+                    console.log("============ ")
+                    console.log(f.name)
+                    console.log(text)
+
+
+                };
+            })(file);
+
+            // fileReader.onload = function(e) {
+            //     var text = e.target.result;
+            //     //do something with text
+            //     // !!! document.body.innerHTML = text;
+            //     console.log("============ ")
+            //     console.log(e.name)
+            //     console.log(text)
+            // };
+
+            fileReader.readAsText(file);
+
+        }
+    }
+
+    Filer1(e) {
+        console.log("=== Filer1")
+
+        this.uploadFiles(e.target.files)
+
+    }
+
     onChange_textarea1 = (event) => {}
 
-    render() {
+
+        render() {
 
         return (
 
@@ -391,6 +438,24 @@ class App extends React.Component {
                 <br></br>
                 <h3>Add User</h3>
                 <Button onClick={(e)=>this.doApi_WordPress_User(e)} variant={`contained`}>DO API</Button>
+
+
+                <Button
+                    variant="contained"
+                    component="label"
+                    onChange={(e)=>this.Filer1(e)}
+                >
+                    Upload File
+                    <input
+
+                        type="file"
+                        accept=".doc,.docx,.txt"
+                        multiple={true}
+                        hidden
+
+                    />
+                </Button>
+
 
                 <h5>{JSON.stringify(this.state)}</h5>
 
