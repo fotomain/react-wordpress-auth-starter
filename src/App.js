@@ -1,10 +1,17 @@
 
+
+//react-wordpress-woocommerce-jwt-starter
 import React, {Component} from 'react'
 
 import axios from 'axios';
 
 import WooCommerceAPI from "./WooCommerceRESTAPI";
 
+import {
+    process_JWT_PATH_TO_TOKEN,
+    process_JWT_USERNAME,
+    process_JWT_password, process_JWT_PASSWORD,
+} from './api_keys';
 
 //=== SNIPETS
 // rcjc
@@ -38,6 +45,51 @@ class App extends React.Component {
 
         //TODO PREFLY TO GET TOKEN !!!!!!!!!!!!!
 
+        async function postData(url = '', data = {}) {
+
+            let headers1 = {
+                'Content-Type': 'application/json',
+
+            }
+
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: headers1,
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            }).then(response => {
+                console.log("=== response.json() books")
+                console.log(response)
+                return response
+            }).catch(err=>{
+                console.log("=== err books")
+                console.log(err.message)
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+
+        const url_root=process_JWT_PATH_TO_TOKEN
+
+        const data1 = {
+            "username":process_JWT_USERNAME,
+            "password":process_JWT_PASSWORD,
+        }
+
+        postData(url_root, data1)
+            .then(data => {
+                console.log("=== data");
+                console.log(data);
+                console.log("=== TOKEN");
+                console.log(data.token);
+                this.setState({jwt_bearer:data.token})
+            });
+
+        this.setState ({done_TOKEN:true})
         // period set
         // this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
 
@@ -102,11 +154,12 @@ class App extends React.Component {
 
     crud_create_WooCommerce_Order() {
 
-        async function postData(url = '', data = {}) {
+        async function postData(url = '', data = {}, jwt_bearer) {
 
             let headers1 = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjE5MzY5NywibmJmIjoxNjUyMTkzNjk3LCJleHAiOjE2NTI3OTg0OTcsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.9HKUgbCaEdCpzJia6-FKHSaFA1-yBUlcGPKMWdZDrFY'
+                'Authorization': 'Bearer ' + jwt_bearer
+
             }
 
             const response = await fetch(url, {
@@ -136,7 +189,10 @@ class App extends React.Component {
                     "quantity": 2
                 }
             ]
-        })
+        },
+
+            this.state.jwt_bearer
+        )
             .then(data => {
                 console.log("=== data orders");
                 console.log(data);
@@ -163,11 +219,11 @@ class App extends React.Component {
 
     doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e) {
 
-        async function postData(url = '', data = {}) {
+        async function postData(url = '', data = {}, jwt_bearer) {
 
             let headers1 = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjMzODc3NCwibmJmIjoxNjUyMzM4Nzc0LCJleHAiOjE2NTI5NDM1NzQsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.2hHE1EJ9abTYBwoewdPYphxJvP-pBb_2tuxQkIPvyvM'
+                'Authorization': 'Bearer ' + jwt_bearer
 
             }
 
@@ -208,7 +264,7 @@ class App extends React.Component {
             short_description: "Pellentesque habitant morbi ",
         }
 
-        postData(url_root, data1)
+        postData(url_root, data1, this.state.jwt_bearer)
             .then(data => {
                 console.log("=== data");
                 console.log(data);
@@ -218,13 +274,14 @@ class App extends React.Component {
 
     }
 
+
     doApi_crud_create_book_JWT_fetch(e) {
 
-        async function postData(url = '', data = {}) {
+        async function postData(url = '', data = {}, jwt_bearer) {
 
             let headers1 = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjMzODc3NCwibmJmIjoxNjUyMzM4Nzc0LCJleHAiOjE2NTI5NDM1NzQsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.2hHE1EJ9abTYBwoewdPYphxJvP-pBb_2tuxQkIPvyvM'
+                'Authorization': 'Bearer ' + jwt_bearer
 
             }
 
@@ -253,7 +310,9 @@ class App extends React.Component {
             "title":"book 333 " + Date.now().toString(),
             "content":"content 333",
             "status":"publish"
-        })
+        },
+            this.state.jwt_bearer
+        )
             .then(data => {
                 console.log("=== data");
                 console.log(data);
@@ -269,7 +328,7 @@ class App extends React.Component {
 
         let headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjMzODc3NCwibmJmIjoxNjUyMzM4Nzc0LCJleHAiOjE2NTI5NDM1NzQsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.2hHE1EJ9abTYBwoewdPYphxJvP-pBb_2tuxQkIPvyvM'
+            'Authorization': 'Bearer ' + this.state.jwt_bearer
         }
 
         axios.post(url_root, {
@@ -306,7 +365,7 @@ class App extends React.Component {
                 <h3>Add Order</h3>
                 <Button onClick={(e)=>this.doApi_WooCommerce_Order(e)} variant={`contained`}>DO API</Button>
 
-                <h3>{JSON.stringify(this.state)}</h3>
+                <h5>{JSON.stringify(this.state)}</h5>
 
             </div>
 
