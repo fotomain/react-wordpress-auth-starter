@@ -3,9 +3,16 @@ import axios from 'axios';
 
 
 class Books extends Component {
-    state = {
-        books:[],
-        isLoaded:false,
+
+    constructor(props) {
+        super();
+
+            this.state = {
+                books:[],
+                isLoaded:false,
+                stateParent:props.stateParent,
+            }
+
     }
     componentDidMount(){
         console.log('=== componentDidMount books '+Date.now())
@@ -29,14 +36,18 @@ class Books extends Component {
 
                 return (
                     <div>
-                        <div>======= isLoaded</div>
-                        {
-                            books.map( (book,ii,aa) => (
-                                <div id={'id_'+ii.toString()} key={'k1_'+ii.toString()} >
-                                    <h4>{book.title.rendered}</h4>
-                                </div>
-                            ))
-                        }
+                        <div>
+                            <div>======= isLoaded</div>
+                            {
+                                books.map( (book,ii,aa) => (
+                                    <div id={'id_'+ii.toString()} key={'k1_'+ii.toString()} >
+                                        <h4>{book.title.rendered}</h4>
+                                    </div>
+                                ))
+                            }
+                        </div>
+
+                        <h3>{JSON.stringify(this.state.stateParent)}</h3>
                     </div>
                 )
 

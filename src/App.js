@@ -54,7 +54,7 @@ class App extends React.Component {
     }
 
 
-    crud_create_WooCommerce_Product() {
+    crud_create_WooCommerce_Product_AUTH1() {
 
         const url_root = "https://antinedoebit.com/"
 
@@ -66,7 +66,7 @@ class App extends React.Component {
             consumerSecret: "cs_eed62fa1661ab15d570cdbb2f0cf07bd9b85e129",
             wp_api: true,
             // version: 'v2',
-            version: 'wc/v3',
+            version: 'wc/v2',
             queryStringAuth: true
         });
 
@@ -145,25 +145,30 @@ class App extends React.Component {
 
     }
 
-    doApi_WooCommerce_Product(e) {
-
-        console.log("=== data_json START")
-
-        const data_json = this.crud_create_WooCommerce_Product();
-
-        console.log(data_json)
-
-        console.log("=== data_json FINISH")
+    doApi_WooCommerce_Product_JWT(e) {
 
     }
 
-    doApi_books_fetch(e) {
+    doApi_WooCommerce_Product_AUTH1(e) {
+
+        console.log("=== data_json START _AUTH1")
+
+        const data_json = this.crud_create_WooCommerce_Product_AUTH1();
+
+        console.log(data_json)
+
+        console.log("=== data_json FINISH _AUTH1")
+
+    }
+
+    doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e) {
 
         async function postData(url = '', data = {}) {
 
             let headers1 = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjE5MzY5NywibmJmIjoxNjUyMTkzNjk3LCJleHAiOjE2NTI3OTg0OTcsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.9HKUgbCaEdCpzJia6-FKHSaFA1-yBUlcGPKMWdZDrFY'
+                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjMzODc3NCwibmJmIjoxNjUyMzM4Nzc0LCJleHAiOjE2NTI5NDM1NzQsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.2hHE1EJ9abTYBwoewdPYphxJvP-pBb_2tuxQkIPvyvM'
+
             }
 
             const response = await fetch(url, {
@@ -175,6 +180,70 @@ class App extends React.Component {
                 redirect: 'follow', // manual, *follow, error
                 referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 body: JSON.stringify(data) // body data type must match "Content-Type" header
+            }).then(response => {
+                console.log("=== response.json() books")
+                console.log(response)
+                return response
+            }).catch(err=>{
+                console.log("=== err books")
+                console.log(err.message)
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+
+        const url_root="https://antinedoebit.com/wp-json/wc/v2/products"
+
+        const data1 = {
+            //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
+            _method: "POST",
+            //Strong!
+            sku: Date.now().toString(),
+            // ,
+            name: "555 Premium Quality " + Date.now().toString(),
+            type: "simple",
+            slug: "prod555",
+            regular_price: "21.99",
+            description: "Pellentesque habitant morbi tristique senectus",
+            short_description: "Pellentesque habitant morbi ",
+        }
+
+        postData(url_root, data1)
+            .then(data => {
+                console.log("=== data");
+                console.log(data);
+            });
+
+        this.setState ({done_doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce:true})
+
+    }
+
+    doApi_crud_create_book_JWT_fetch(e) {
+
+        async function postData(url = '', data = {}) {
+
+            let headers1 = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjMzODc3NCwibmJmIjoxNjUyMzM4Nzc0LCJleHAiOjE2NTI5NDM1NzQsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.2hHE1EJ9abTYBwoewdPYphxJvP-pBb_2tuxQkIPvyvM'
+
+            }
+
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: headers1,
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            }).then(response => {
+                console.log("=== response.json() books")
+                console.log(response)
+                return response
+            }).catch(err=>{
+                console.log("=== err books")
+                console.log(err.message)
             });
             return response.json(); // parses JSON response into native JavaScript objects
         }
@@ -190,7 +259,7 @@ class App extends React.Component {
                 console.log(data);
             });
 
-
+        this.setState ({done_doApi_crud_create_book_JWT_fetch:true})
 
     }
 
@@ -200,7 +269,7 @@ class App extends React.Component {
 
         let headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjE5MzY5NywibmJmIjoxNjUyMTkzNjk3LCJleHAiOjE2NTI3OTg0OTcsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.9HKUgbCaEdCpzJia6-FKHSaFA1-yBUlcGPKMWdZDrFY'
+            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYW50aW5lZG9lYml0LmNvbSIsImlhdCI6MTY1MjMzODc3NCwibmJmIjoxNjUyMzM4Nzc0LCJleHAiOjE2NTI5NDM1NzQsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.2hHE1EJ9abTYBwoewdPYphxJvP-pBb_2tuxQkIPvyvM'
         }
 
         axios.post(url_root, {
@@ -228,14 +297,16 @@ class App extends React.Component {
             <div>
                 <div>class App</div>
 
-                <Books/>
+                <Books stateParent = {this.state}/>
 
                 <h3>Add Book</h3>
-                <Button onClick={(e)=>this.doApi_books_fetch(e)} variant={`contained`}>DO API</Button>
+                <Button onClick={(e)=>this.doApi_crud_create_book_JWT_fetch(e)} variant={`contained`}>DO API</Button>
                 <h3>Add Product</h3>
-                <Button onClick={(e)=>this.doApi_WooCommerce_Product(e)} variant={`contained`}>DO API</Button>
+                <Button onClick={(e)=>this.doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e)} variant={`contained`}>DO API</Button>
                 <h3>Add Order</h3>
                 <Button onClick={(e)=>this.doApi_WooCommerce_Order(e)} variant={`contained`}>DO API</Button>
+
+                <h3>{JSON.stringify(this.state)}</h3>
 
             </div>
 
