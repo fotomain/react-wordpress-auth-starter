@@ -1,12 +1,19 @@
 
-
 //react-wordpress-woocommerce-rest-api-jwt-starter
 //WORDPRESS JWT SERVER = JWT Authentication for WP REST API
 //                       By Enrique Chavez
 //cool DOC from: https://www.youtube.com/watch?v=fFNXWinbgro
 //===================================================
 //=============== HOW TO RUN THIS PROJECT ===========
-// yarn  install; yarn start
+//===================================================
+// make the file with your keys './api_keys' near App.js
+// export const process_JWT_PATH_TO_TOKEN  = 'https://ddddddddddddddddddd';
+// export const process_JWT_USERNAME       = 'ddddddd';
+// export const process_JWT_PASSWORD       = 'dddddddddd';
+// export const process_JWT_USERNAME_ADMIN
+// export const process_JWT_PASSWORD_ADMIN
+
+// yarn  install
 // ionic build prod; ionic cap sync; ionic serve
 
 import React, {Component} from 'react'
@@ -18,7 +25,10 @@ import WooCommerceAPI from "./WooCommerceRESTAPI"; // NOT WORK PARALLEL JWT IN h
 import {
     process_JWT_PATH_TO_TOKEN,
     process_JWT_USERNAME,
-    process_JWT_password, process_JWT_PASSWORD,
+    process_JWT_PASSWORD,
+    process_URL_ROOT_APP,
+    process_JWT_USERNAME_ADMIN,
+    process_JWT_PASSWORD_ADMIN
 } from './api_keys';
 
 // yarn  install; yarn start
@@ -41,56 +51,76 @@ class App extends React.Component {
         super();
     }
 
-    componentDidMount() {
+    headers1_base = {
+        'Content-Type': 'application/json',
+    }
+
+    async componentDidMount() {
         console.log('=== componentDidMount'+Date.now())
 
-        //TODO PREFLY TO GET TOKEN !!!!!!!!!!!!!
-
-        async function postData(url = '', data = {}) {
-
-            let headers1 = {
-                'Content-Type': 'application/json',
-
-            }
-
-            const response = await fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: headers1,
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            }).then(response => {
-                console.log("=== response.json() books")
-                console.log(response)
-                return response
-            }).catch(err=>{
-                console.log("=== err books")
-                console.log(err.message)
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-
-        const url_root=process_JWT_PATH_TO_TOKEN
-
         const data1 = {
+            //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
+            _method: "POST",
             "username":process_JWT_USERNAME,
             "password":process_JWT_PASSWORD,
         }
 
-        postData(url_root, data1)
+        const url_root = process_JWT_PATH_TO_TOKEN
+
+        const ret1 = await this.postData1(this.fetch_main, this.headers1_base, url_root, data1)
             .then(data => {
-                console.log("=== data");
+                console.log("=== data " + url_root);
                 console.log(data);
-                console.log("=== TOKEN");
-                console.log(data.token);
-                this.setState({jwt_bearer:data.token})
+
+                this.setState({
+                    jwt_bearer:data.token,
+                    done_TOKEN:true,
+                },()=>{})
+
+                const t_headers1_with_bearer = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + data.token
+                }
+                return t_headers1_with_bearer;
+
+            }).catch(err=>{
+                console.log("=== err  " + url_root)
+                console.log(err.message)
             });
 
-        this.setState ({done_TOKEN:true})
+        this.headers1_with_bearer = ret1;
+        console.log("=== this.headers1_with_bearer")
+        console.log(this.headers1_with_bearer)
+
+        const data1admin = {
+            _method: "POST",
+            "username":process_JWT_USERNAME_ADMIN,
+            "password":process_JWT_PASSWORD_ADMIN,
+        }
+
+        const ret2 = await  this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1admin)
+            .then(data => {
+                console.log("=== data admin " + url_root);
+                console.log(data);
+                console.log("=== TOKEN ADMIN");
+                console.log(data.token);
+                this.setState({
+                    jwt_bearer_admin:data.token,
+                    done_TOKEN_ADMIN:true
+                },()=>{})
+
+                const t_headers1_with_bearer_admin = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + data.token
+                }
+                return t_headers1_with_bearer_admin;
+
+            });
+
+        this.headers1_with_bearer_admin = ret2;
+        console.log("=== this.headers1_with_bearer_admin")
+        console.log(this.headers1_with_bearer_admin)
+
         // period set
         // this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
 
@@ -109,7 +139,7 @@ class App extends React.Component {
 
     crud_create_WooCommerce_Product_AUTH1() {
 
-        const url_root = "https://antinedoebit.com/"
+        const url_root = process_URL_ROOT_APP+"/"
 
         var api_WooCommerceAPI = new WooCommerceAPI({
             url: url_root,
@@ -148,36 +178,69 @@ class App extends React.Component {
     }
 
 
+    crud_create_WordPress_User() {
+
+        const url_root = process_URL_ROOT_APP + "/wp-json/wp/v2/users"
+
+        const data1 = {
+            //=== https://developer.wordpress.org/rest-api/reference/users/#create-a-user
+            username:'username111 ' + Date.now().toString(),
+            password:'password111 ' + Date.now().toString(),
+            name:'name111' + Date.now().toString(),
+            nickname:'name111' + Date.now().toString(),
+            slug:'name111' + Date.now().toString(),
+            "first_name":   "John " + Date.now().toString(),
+            "last_name":    "Doe",
+            "email":        "john11.doe@example.com",
+            roles:['customer','subscriber','author'],
+        }
+
+
+        this.postData1(this.fetch_main, this.headers1_with_bearer_admin, url_root, data1 )
+            .then(data => {
+                console.log("=== data " + url_root);
+                console.log(data);
+            })
+            .then(data => {
+                console.log("=== data " + url_root);
+                console.log(data);
+            });
+
+
+    }
+
+    doApi_WordPress_User(e) {
+        this.crud_create_WordPress_User()
+    }
 
     doApi_WooCommerce_Order(e) {
         this.crud_create_WooCommerce_Order()
     }
 
+    fetch_main({url, data, headers}){
+        return fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: headers,
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        })
+    }
+
+
+    async postData1(f_fetch, headers1, url = '', data = {}) {
+        const response = await f_fetch({url:url,data:data,headers:headers1});
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+
     crud_create_WooCommerce_Order() {
 
-        async function postData(url = '', data = {}, jwt_bearer) {
+        const url_root = process_URL_ROOT_APP + "/wp-json/wc/v2/orders"
 
-            let headers1 = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + jwt_bearer
-
-            }
-
-            const response = await fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: headers1,
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-        const url_root="https://antinedoebit.com/wp-json/wc/v2/orders"
-        postData(url_root, {
+        this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, {
                 "billing": {
                     "first_name": "John " + Date.now().toString(),
                     "last_name": "Doe",
@@ -190,12 +253,10 @@ class App extends React.Component {
                         "quantity": 2
                     }
                 ]
-            },
-
-            this.state.jwt_bearer
+            }
         )
             .then(data => {
-                console.log("=== data orders");
+                console.log("=== data " + url_root);
                 console.log(data);
             });
 
@@ -220,37 +281,6 @@ class App extends React.Component {
 
     doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e) {
 
-        async function postData(url = '', data = {}, jwt_bearer) {
-
-            let headers1 = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + jwt_bearer
-
-            }
-
-            const response = await fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: headers1,
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            }).then(response => {
-                console.log("=== response.json() books")
-                console.log(response)
-                return response
-            }).catch(err=>{
-                console.log("=== err books")
-                console.log(err.message)
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-
-        const url_root="https://antinedoebit.com/wp-json/wc/v2/products"
-
         const data1 = {
             //=== https://github.com/woocommerce/woocommerce/wiki/Getting-started-with-the-REST-API
             _method: "POST",
@@ -265,13 +295,14 @@ class App extends React.Component {
             short_description: "Pellentesque habitant morbi ",
         }
 
-        postData(url_root, data1, this.state.jwt_bearer)
-            .then(data => {
-                console.log("=== data");
-                console.log(data);
-            });
+        const url_root = process_URL_ROOT_APP+"/wp-json/wc/v2/products"
 
-        this.setState ({done_doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce:true})
+        this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1)
+            .then(data => {
+                console.log("=== data " + url_root);
+                console.log(data);
+                this.setState ({done_doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce:true})
+            });
 
     }
 
@@ -283,30 +314,21 @@ class App extends React.Component {
             let headers1 = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + jwt_bearer
-
             }
 
-            const response = await fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: headers1,
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            }).then(response => {
-                console.log("=== response.json() books")
-                console.log(response)
-                return response
-            }).catch(err=>{
-                console.log("=== err books")
-                console.log(err.message)
-            });
+            const response = await this.fetch_main({url:url,data:data,headers:headers1})
+                .then(response => {
+                    console.log("=== response.json() books")
+                    console.log(response)
+                    return response
+                }).catch(err=>{
+                    console.log("=== err books")
+                    console.log(err.message)
+                });
             return response.json(); // parses JSON response into native JavaScript objects
         }
 
-        const url_root="https://antinedoebit.com/wp-json/wp/v2/books"
+        const url_root = process_URL_ROOT_APP+"/wp-json/wp/v2/books"
         postData(url_root, {
                 "title":"book 333 " + Date.now().toString(),
                 "content":"content 333",
@@ -315,7 +337,7 @@ class App extends React.Component {
             this.state.jwt_bearer
         )
             .then(data => {
-                console.log("=== data");
+                console.log("=== data " + url_root);
                 console.log(data);
             });
 
@@ -325,7 +347,7 @@ class App extends React.Component {
 
     doApi_books_axios(e) {
 
-        const url_root="https://antinedoebit.com/wp-json/wp/v2/books"
+        const url_root = process_URL_ROOT_APP+"/wp-json/wp/v2/books"
 
         let headers = {
             'Content-Type': 'application/json',
@@ -365,6 +387,10 @@ class App extends React.Component {
                 <Button onClick={(e)=>this.doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e)} variant={`contained`}>DO API</Button>
                 <h3>Add Order</h3>
                 <Button onClick={(e)=>this.doApi_WooCommerce_Order(e)} variant={`contained`}>DO API</Button>
+                <br></br>
+                <br></br>
+                <h3>Add User</h3>
+                <Button onClick={(e)=>this.doApi_WordPress_User(e)} variant={`contained`}>DO API</Button>
 
                 <h5>{JSON.stringify(this.state)}</h5>
 

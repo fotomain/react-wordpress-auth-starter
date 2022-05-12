@@ -1,5 +1,4 @@
 
-
 //react-wordpress-woocommerce-rest-api-jwt-starter
 //WORDPRESS JWT SERVER = JWT Authentication for WP REST API
 //                       By Enrique Chavez
@@ -99,7 +98,7 @@ class App extends React.Component {
             "password":process_JWT_PASSWORD_ADMIN,
         }
 
-        this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1admin)
+        const ret2 = await  this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1admin)
             .then(data => {
                 console.log("=== data admin " + url_root);
                 console.log(data);
@@ -108,8 +107,19 @@ class App extends React.Component {
                 this.setState({
                     jwt_bearer_admin:data.token,
                     done_TOKEN_ADMIN:true
-                })
+                },()=>{})
+
+                const t_headers1_with_bearer_admin = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + data.token
+                }
+                return t_headers1_with_bearer_admin;
+
             });
+
+        this.headers1_with_bearer_admin = ret2;
+        console.log("=== this.headers1_with_bearer_admin")
+        console.log(this.headers1_with_bearer_admin)
 
         // period set
         // this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
@@ -170,29 +180,9 @@ class App extends React.Component {
 
     crud_create_WordPress_User() {
 
-        async function postData(url = '', data = {}, jwt_bearer) {
-
-            let headers1 = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + jwt_bearer
-
-            }
-
-            const response = await fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: headers1,
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
         const url_root = process_URL_ROOT_APP + "/wp-json/wp/v2/users"
-        const data = {
+
+        const data1 = {
             //=== https://developer.wordpress.org/rest-api/reference/users/#create-a-user
             username:'username111 ' + Date.now().toString(),
             password:'password111 ' + Date.now().toString(),
@@ -201,15 +191,16 @@ class App extends React.Component {
             slug:'name111' + Date.now().toString(),
             "first_name":   "John " + Date.now().toString(),
             "last_name":    "Doe",
-            "email":        "john.doe@example.com",
+            "email":        "john11.doe@example.com",
             roles:['customer','subscriber','author'],
         }
-        console.log("=== data user to insert")
-        console.log(data)
-        postData(url_root, data,
 
-            this.state.jwt_bearer_admin
-        )
+
+        this.postData1(this.fetch_main, this.headers1_with_bearer_admin, url_root, data1 )
+            .then(data => {
+                console.log("=== data " + url_root);
+                console.log(data);
+            })
             .then(data => {
                 console.log("=== data " + url_root);
                 console.log(data);
@@ -323,7 +314,6 @@ class App extends React.Component {
             let headers1 = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + jwt_bearer
-
             }
 
                 const response = await this.fetch_main({url:url,data:data,headers:headers1})
