@@ -33,7 +33,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>class App</div>
+            <div>class Book2Display</div>
         )
     }
 }

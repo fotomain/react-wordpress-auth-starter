@@ -31,6 +31,7 @@ import {
     process_JWT_PASSWORD_ADMIN
 } from './api_keys';
 
+import Book2Display from './Book2Display'
 // yarn  install; yarn start
 // ionic build prod; ionic cap sync; ionic serve
 
@@ -49,6 +50,10 @@ import {Button} from '@mui/material';
 class App extends React.Component {
     constructor(props) {
         super();
+        this.state = {
+            mode_book_is_ready:false,
+            mode_degug_log:false,
+        }
     }
 
     headers1_base = {
@@ -100,10 +105,10 @@ class App extends React.Component {
 
         const ret2 = await  this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1admin)
             .then(data => {
-                console.log("=== data admin " + url_root);
-                console.log(data);
-                console.log("=== TOKEN ADMIN");
-                console.log(data.token);
+                    console.log("=== data admin " + url_root);
+                    console.log(data);
+                    console.log("=== TOKEN ADMIN");
+                    console.log(data.token);
                 this.setState({
                     jwt_bearer_admin:data.token,
                     done_TOKEN_ADMIN:true
@@ -370,7 +375,7 @@ class App extends React.Component {
 
     }
 
-    uploadFiles = (files) => {
+    uploadFiles = ({files, f_callback}) => {
         console.log("Uploading file...");
         for (let i = 0; i < files.length; i++) {
 
@@ -391,7 +396,8 @@ class App extends React.Component {
                     console.log(f.name)
                     // console.log(text)
 
-                    var arrfile_Lines = text.split('\n');
+                    // var arrfile_Lines = text.split('\n');
+                    var arrfile_Lines = text.split(/(?<=[\n])/g);
                     // var arrfile_Lines = text.split(/(\r\n|\n|\r)/gm);
 
                     var file_Text = arrfile_Lines.join(' ');
@@ -416,14 +422,29 @@ class App extends React.Component {
                     // var arrfile_NoLineBreaks = file_NoLineBreaks.split(/[.!?]+/);
                     var arrfile_Sentences = file_Text.split(/(?<=[.!?])/g);
 
-                    var inv1=0;
-                    arrfile_Sentences.reduce((tot,el,ii,ar)=>{
+                    var init1=0;
+                    var init2=0;
+                    var lexema_n=1;
+                    var arr_lexemas=[]
+                    arrfile_Sentences.reduce((tt,el,ii,aa)=>{
 
-                        console.log("==========")
-                        console.log(el)
-                        console.log("========== split"+ii)
+                            // console.log("==========")
+                            // console.log(el)
+                            // console.log("========== split" + ii)
 
-                        var e1 = el.split(/(?=[ .,:;!?])|(?<=[ .,:;!?])/g);
+                        var e1 = el.split(/(?=[\n .,:;!?])|(?<=[\n .,:;!?])/g);
+
+                        e1.reduce((tt,ee,ii,aa)=>{
+
+                            const tL = 'lexema_'+lexema_n++
+
+                            if(-1!=ee.indexOf("\n")){
+                                // console.log("\\n --- " + tL)
+                            }
+
+                            arr_lexemas.push({lexema_n:tL, lexema_text:ee});
+
+                        },init2)
 
                         // e1 = e1.map(el2=>{return el2.replace(' ','')})
 
@@ -436,10 +457,26 @@ class App extends React.Component {
                         //         return true
                         // })
 
-                        console.log(e1)
+                        // if(this.state.mode_degug_log) {
+                        //     console.log(e1)
+                        // }
 
-                    },inv1)
+                    },init1)
+                    // if(this.state.mode_degug_log) {
+                        console.log("=== arr_lexemas")
+                        console.log(arr_lexemas)
+                    // }
 
+                    // var res_text=''
+                    // arr_lexemas.reduce((tt,ee,ii,aa)=>{
+                    //     if(-1!=ee.lexema_text.indexOf("\n")){
+                    //         // console.log()
+                    //     }
+                    // },init2)
+                    // console.log("=== res_text")
+                    // console.log(res_text)
+
+                    f_callback({p_arr_lexemas:arr_lexemas})
                     // console.log(arrfile_NoLineBreaks)
 
                 //    TODO CHECK -> (!) (?) IN TEXT
@@ -455,7 +492,19 @@ class App extends React.Component {
     Filer1(e) {
         console.log("=== Filer1")
 
-        this.uploadFiles(e.target.files)
+        this.uploadFiles(
+            {
+                files:e.target.files,
+                f_callback:({p_arr_lexemas})=>{
+                    this.setState( {
+                    arr_lexemas:p_arr_lexemas,
+                    mode_book_is_ready:true,
+                    }
+                )}
+            }
+        )
+
+
 
     }
 
@@ -502,7 +551,13 @@ class App extends React.Component {
                 </Button>
 
 
-                <h5>{JSON.stringify(this.state)}</h5>
+                {/*<h5>{JSON.stringify(this.state)}</h5>*/}
+
+                {/*react dom add input programmatically from text*/}
+                <div>
+                    {(this.state.mode_book_is_ready)?<Book2Display arr_lexemas={this.state.arr_lexemas}/>:'Book is not Loaded!'}
+                </div>
+
 
             </div>
 
