@@ -378,7 +378,7 @@ class App extends React.Component {
 
             var fileReader = new FileReader();
 
-            var file = files[i]
+            var file1 = files[i]
             fileReader.onload = (function(f) {
                 return function(e) {
                     // Here you can use `e.target.result` or `this.result`
@@ -389,22 +389,65 @@ class App extends React.Component {
                     // !!! document.body.innerHTML = text;
                     console.log("============ ")
                     console.log(f.name)
-                    console.log(text)
+                    // console.log(text)
 
+                    var arrfile_Lines = text.split('\n');
+                    // var arrfile_Lines = text.split(/(\r\n|\n|\r)/gm);
+
+                    var file_Text = arrfile_Lines.join(' ');
+
+                    console.log("========== replace start ")
+
+                    file_Text = file_Text.replace(/(\r)/gm, "");
+                    // file_Text = file_Text.replace(/(\r\n|\n|\r)/gm, "");
+                    file_Text = file_Text.replace(" т. e. ", " т.e. ")
+                    file_Text = file_Text.replace("--", "-")
+                    file_Text = file_Text.replace("--", "-")
+                    file_Text = file_Text.replace("  ", " ")
+                    file_Text = file_Text.replace("   ", " ")
+                    file_Text = file_Text.replace("    ", " ")
+                    file_Text = file_Text.replace("     ", " ")
+                    console.log("========== replace finish ")
+
+                    //
+                    // console.log(file_NoLineBreaks)
+
+
+                    // var arrfile_NoLineBreaks = file_NoLineBreaks.split(/[.!?]+/);
+                    var arrfile_Sentences = file_Text.split(/(?<=[.!?])/g);
+
+                    var inv1=0;
+                    arrfile_Sentences.reduce((tot,el,ii,ar)=>{
+
+                        console.log("==========")
+                        console.log(el)
+                        console.log("========== split"+ii)
+
+                        var e1 = el.split(/(?=[ .,:;!?])|(?<=[ .,:;!?])/g);
+
+                        // e1 = e1.map(el2=>{return el2.replace(' ','')})
+
+                        //split492
+                        // e1 = e1.filter(el2=> {
+                        //     if (el2 == '\r') {
+                        //         return false
+                        //     }
+                        //     else
+                        //         return true
+                        // })
+
+                        console.log(e1)
+
+                    },inv1)
+
+                    // console.log(arrfile_NoLineBreaks)
+
+                //    TODO CHECK -> (!) (?) IN TEXT
 
                 };
-            })(file);
+            })(file1);
 
-            // fileReader.onload = function(e) {
-            //     var text = e.target.result;
-            //     //do something with text
-            //     // !!! document.body.innerHTML = text;
-            //     console.log("============ ")
-            //     console.log(e.name)
-            //     console.log(text)
-            // };
-
-            fileReader.readAsText(file);
+            fileReader.readAsText(file1);
 
         }
     }
@@ -439,8 +482,10 @@ class App extends React.Component {
                 <h3>Add User</h3>
                 <Button onClick={(e)=>this.doApi_WordPress_User(e)} variant={`contained`}>DO API</Button>
 
-
+                <br></br>
+                <br></br>
                 <Button
+                    style={{width: '30ch', height: '10ch'}}
                     variant="contained"
                     component="label"
                     onChange={(e)=>this.Filer1(e)}
