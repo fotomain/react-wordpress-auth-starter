@@ -1,5 +1,5 @@
 
-//react-wordpress-woocommerce-rest-api-jwt-starter
+//react-wordpress-woocommerce-rest-api-jwt-oauth-starter
 //WORDPRESS JWT SERVER = JWT Authentication for WP REST API
 //                       By Enrique Chavez
 //cool DOC from: https://www.youtube.com/watch?v=fFNXWinbgro
@@ -22,11 +22,13 @@ import axios from 'axios';
 
 import WooCommerceAPI from "./WooCommerceRESTAPI"; // NOT WORK PARALLEL JWT IN hostinger.com
 
+// import fs from 'fs'
+
 import {
     process_JWT_PATH_TO_TOKEN,
     process_JWT_USERNAME,
     process_JWT_PASSWORD,
-    process_URL_ROOT_APP,
+    process_URL_ROOT_API_WP,
     process_JWT_USERNAME_ADMIN,
     process_JWT_PASSWORD_ADMIN
 } from './api_keys';
@@ -142,9 +144,10 @@ class App extends React.Component {
     }
 
 
+
     crud_create_WooCommerce_Product_AUTH1() {
 
-        const url_root = process_URL_ROOT_APP+"/"
+        const url_root = process_URL_ROOT_API_WP + "/"
 
         var api_WooCommerceAPI = new WooCommerceAPI({
             url: url_root,
@@ -175,7 +178,6 @@ class App extends React.Component {
 
         const ret1 = api_WooCommerceAPI.post("products", data)
 
-
         console.log("=== products ret1 ")
         console.log(ret1)
         return ret1;
@@ -185,7 +187,7 @@ class App extends React.Component {
 
     crud_create_WordPress_User() {
 
-        const url_root = process_URL_ROOT_APP + "/wp-json/wp/v2/users"
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/users"
 
         const data1 = {
             //=== https://developer.wordpress.org/rest-api/reference/users/#create-a-user
@@ -214,7 +216,7 @@ class App extends React.Component {
 
     }
 
-    doApi_WordPress_User(e) {
+    onClick_crud_create_WordPress_User(e) {
         this.crud_create_WordPress_User()
     }
 
@@ -243,7 +245,7 @@ class App extends React.Component {
 
     crud_create_WooCommerce_Order() {
 
-        const url_root = process_URL_ROOT_APP + "/wp-json/wc/v2/orders"
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wc/v2/orders"
 
         this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, {
                 "billing": {
@@ -300,7 +302,7 @@ class App extends React.Component {
             short_description: "Pellentesque habitant morbi ",
         }
 
-        const url_root = process_URL_ROOT_APP+"/wp-json/wc/v2/products"
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wc/v2/products"
 
         this.postData1(this.fetch_main, this.headers1_with_bearer, url_root, data1)
             .then(data => {
@@ -333,7 +335,7 @@ class App extends React.Component {
             return response.json(); // parses JSON response into native JavaScript objects
         }
 
-        const url_root = process_URL_ROOT_APP+"/wp-json/wp/v2/books"
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/books"
         postData(url_root, {
                 "title":"book 333 " + Date.now().toString(),
                 "content":"content 333",
@@ -352,7 +354,7 @@ class App extends React.Component {
 
     doApi_books_axios(e) {
 
-        const url_root = process_URL_ROOT_APP+"/wp-json/wp/v2/books"
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/books"
 
         let headers = {
             'Content-Type': 'application/json',
@@ -375,7 +377,63 @@ class App extends React.Component {
 
     }
 
-    uploadFiles = ({files, f_callback}) => {
+    uploadFilesMedia = ({files, f_callback}) => {
+        console.log("uploadFilesMedia file...");
+
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/media"
+
+
+             console.log("=== files")
+             console.log(files)
+
+
+              for (let i = 0; i < files.length; i++) {
+
+                var image = files[i]
+
+
+                const fname1 = image.name
+                console.log(image.path)
+                console.log(image.name)
+                console.log(image.mime)
+                console.log(fname1)
+
+                let headers_media = {
+                  'Content-Type':'image/png',
+
+                  'Authorization': 'Bearer ' + this.state.jwt_bearer_admin,
+                  'Content-Disposition' : "attachment; filename='"+fname1+"'",
+                }
+                console.log("=== headers_media")
+                console.log(headers_media)
+
+                  let requestOptions = {
+
+                    method: 'POST',
+                    headers: headers_media,
+                    body: image,
+                    redirect: 'follow'
+                  };
+
+                  fetch(url_root, requestOptions)
+                  .then(response => response.text())
+                  .then(result => {
+                    console.log("=== result OK")
+                    console.log(result)
+                    return result;
+                  })
+                  .catch(error => {
+                    console.log("=== result ERROR")
+                    return error;
+                  });
+
+              }
+
+
+    }
+
+
+        uploadFiles = ({files, f_callback}) => {
         console.log("Uploading file...");
         for (let i = 0; i < files.length; i++) {
 
@@ -392,7 +450,7 @@ class App extends React.Component {
                     var text = e.target.result;
                     //do something with text
                     // !!! document.body.innerHTML = text;
-                    console.log("============ ")
+                    console.log("============ f.name")
                     console.log(f.name)
                     // console.log(text)
 
@@ -489,6 +547,15 @@ class App extends React.Component {
         }
     }
 
+    Filer2Media(e) {
+        console.log("=== Filer2Media")
+
+        this.uploadFilesMedia({
+            files: e.target.files,
+        })
+    }
+
+
     Filer1(e) {
         console.log("=== Filer1")
 
@@ -529,12 +596,12 @@ class App extends React.Component {
                 <br></br>
                 <br></br>
                 <h3>Add User</h3>
-                <Button onClick={(e)=>this.doApi_WordPress_User(e)} variant={`contained`}>DO API</Button>
+                <Button onClick={(e)=>this.onClick_crud_create_WordPress_User(e)} variant={`contained`}>DO API</Button>
 
                 <br></br>
                 <br></br>
                 <Button
-                    style={{width: '30ch', height: '10ch'}}
+                    // style={{width: '30ch', height: '10ch'}}
                     variant="contained"
                     component="label"
                     onChange={(e)=>this.Filer1(e)}
@@ -546,6 +613,25 @@ class App extends React.Component {
                         accept=".doc,.docx,.txt"
                         multiple={true}
                         hidden
+
+                    />
+                </Button>
+
+                <br></br>
+                <br></br>
+                <Button
+                  style={{width: '30ch', height: '10ch'}}
+                  variant="contained"
+                  component="label"
+                  onChange={(e)=>this.Filer2Media(e)}
+                >
+                    MEDIA
+                    <input
+
+                      type="file"
+                      // accept=".doc,.docx,.txt"
+                      multiple={true}
+                      hidden
 
                     />
                 </Button>
