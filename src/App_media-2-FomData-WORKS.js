@@ -386,46 +386,18 @@ class App extends React.Component {
         var responce=[]
 
         // const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/media/39"
-        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/media"
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/media/"
 
              console.log("=== files")
              console.log(files)
 
               for (let i = 0; i < files.length; i++) {
 
-                function uuidv4() {
-                  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-                  );
-                }
-
                 var image = files[i]
-
-                  // String.prototype.hexEncode = function(){
-                  //     var hex, i;
-                  //
-                  //     var result = "";
-                  //     for (i=0; i<this.length; i++) {
-                  //         hex = this.charCodeAt(i).toString(16);
-                  //         result += ("000"+hex).slice(-4);
-                  //     }
-                  //
-                  //     return result
-                  // }
-
-                var tSlug = ("media_slug_"+image.name)
-
-                //tSlug = tSlug.hexEncode()
-
                 const formData = new FormData();
                 formData.append("file",image);
-                formData.append("title", "Hello World! " + Date.now().toString());
+                formData.append("title", "Hello World!");
                 formData.append("caption", "Have a wonderful day!");
-                formData.append("slug", tSlug);
-                // formData.append("slug", "this_slug_"+i.toString());
-                // formData.append("guid", "media_guid_"+i.toString());
-                //================== formData.append("slug", "this_slug_"+uuidv4());
-
 
                 let headers_media = {
                   // 'Content-Type':'form/multipart',
@@ -433,37 +405,6 @@ class App extends React.Component {
                   'Authorization': 'Bearer ' + this.state.jwt_bearer_admin,
                   // 'Content-Disposition' : "attachment; caption='cccc'; filename='media_"+Date.now().toString()+fname1+"'",
                 }
-
-                // tSlug
-
-                var tUrl = new URL(url_root+"/70")
-                const tParams = { force:true }
-                tUrl.search = new URLSearchParams(tParams).toString();
-                // var fd_del = new FormData()
-                // fd_del.append("force",true)
-
-                const res_DELETE = await fetch(
-                  tUrl,
-                  // +"/?slug='"+tSlug+ "'",
-                  {
-                    method: "DELETE",
-                    headers: headers_media,
-                    redirect: 'follow',
-                    // body: fd_del,
-
-                  }
-                )
-                  .then(response => response.text())
-                  .then(result => {
-                    console.log("=== result DELETE OK")
-                    console.log(result)
-                    return result;
-                  })
-                  .catch(error => {
-                    console.log("=== result DELETE ERROR")
-                    return error;
-                  });
-
 
                 const res_media = await fetch(
                   url_root,
@@ -485,8 +426,6 @@ class App extends React.Component {
                     return error;
                   });
 
-                console.log("=== res_media.post")
-                console.log(res_media.post)
 
               }
 
@@ -699,8 +638,6 @@ class App extends React.Component {
 
                     />
                 </Button>
-
-
 
 
                 {/*<h5>{JSON.stringify(this.state)}</h5>*/}

@@ -413,7 +413,6 @@ class App extends React.Component {
                     headers: headers_media,
                     body: image,
                     redirect: 'follow',
-                    data: {"title": 'ddddddddddddd'},
 
                   };
 
