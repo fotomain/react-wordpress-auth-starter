@@ -48,7 +48,7 @@ import Book2Display from './Book2Display'
 
 import Books from './Books'
 
-import {Button} from '@mui/material';
+import {Button, Grid} from '@mui/material';
 
 // const { ClientCredentials, ResourceOwnerPassword, AuthorizationCode } = require('simple-oauth2');
 
@@ -380,6 +380,84 @@ class App extends React.Component {
 
     }
 
+    crud_delete_media = async ({p_id, f_callback}) => {
+
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/media"
+
+        let headers_media = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.state.jwt_bearer_admin,
+        }
+
+        var tUrl = new URL(url_root+"/"+p_id.toString().trim())
+        const tParams = { force:true }
+        tUrl.search = new URLSearchParams(tParams).toString();
+
+        const res_media = await fetch(
+            tUrl,
+
+            {
+                method: "DELETE",
+                headers: headers_media,
+                redirect: 'follow',
+            }
+        )
+            .then(response => response.text())
+            .then(result => {
+                console.log("=== result DELETE OK")
+                console.log(result)
+                return result;
+            })
+            .catch(error => {
+                console.log("=== result DELETE ERROR")
+                return error;
+            });
+
+        console.log("=== res_media")
+        console.log(res_media)
+
+
+    }
+
+    crud_read_media = async ({p_id, f_callback}) => {
+
+        console.log("=== crud_read_media")
+
+        const url_root = process_URL_ROOT_API_WP + "/wp-json/wp/v2/media"
+
+        let headers_media = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.state.jwt_bearer_admin,
+        }
+
+        const res_media = await fetch(
+            url_root,
+            {
+                method: "GET",
+                headers: headers_media,
+                redirect: 'follow',
+            }
+        )
+            .then(response => response.text())
+            .then(result => {
+                console.log("=== result OK")
+                console.log(result)
+                return result;
+            })
+            .catch(error => {
+                console.log("=== result ERROR")
+                return error;
+            });
+
+        console.log("=== res_media")
+        console.log(res_media)
+
+        const response = JSON.parse(res_media)
+
+        return response
+
+    }
+
     uploadFilesMedia = async ({files, f_callback}) => {
         console.log("uploadFilesMedia file...");
 
@@ -401,17 +479,6 @@ class App extends React.Component {
 
                 var image = files[i]
 
-                  // String.prototype.hexEncode = function(){
-                  //     var hex, i;
-                  //
-                  //     var result = "";
-                  //     for (i=0; i<this.length; i++) {
-                  //         hex = this.charCodeAt(i).toString(16);
-                  //         result += ("000"+hex).slice(-4);
-                  //     }
-                  //
-                  //     return result
-                  // }
 
                 var tSlug = ("media_slug_"+image.name)
 
@@ -435,34 +502,6 @@ class App extends React.Component {
                 }
 
                 // tSlug
-
-                var tUrl = new URL(url_root+"/70")
-                const tParams = { force:true }
-                tUrl.search = new URLSearchParams(tParams).toString();
-                // var fd_del = new FormData()
-                // fd_del.append("force",true)
-
-                const res_DELETE = await fetch(
-                  tUrl,
-                  // +"/?slug='"+tSlug+ "'",
-                  {
-                    method: "DELETE",
-                    headers: headers_media,
-                    redirect: 'follow',
-                    // body: fd_del,
-
-                  }
-                )
-                  .then(response => response.text())
-                  .then(result => {
-                    console.log("=== result DELETE OK")
-                    console.log(result)
-                    return result;
-                  })
-                  .catch(error => {
-                    console.log("=== result DELETE ERROR")
-                    return error;
-                  });
 
 
                 const res_media = await fetch(
@@ -607,6 +646,25 @@ class App extends React.Component {
         }
     }
 
+    crud_read_Media = async (e) => {
+
+        console.log("=== Filer2Media")
+
+        const loaded_media_array = await this.crud_read_media({
+            p_id:100
+        })
+
+        console.log("=== loaded_media_array")
+        console.log(loaded_media_array.length)
+        console.log(typeof loaded_media_array)
+        loaded_media_array.reduce((tt,ee,ii,aa)=>{
+            console.log(ee.id,ee.title.rendered)
+            console.log(ee.link)
+            console.log(ee)
+        })
+
+    }
+
     Filer2Media = async (e) => {
         console.log("=== Filer2Media")
 
@@ -649,58 +707,82 @@ class App extends React.Component {
             <div>
                 <div>class App</div>
 
-                <Books stateParent = {this.state}/>
+                {/*style={{display}*/}
+                <Grid container direction={`row`} justifyContent={`spaceBetween`} alignItems={`center`} >
+                    <Grid item container spacing={10} p={1}>
+                        <h3>Books</h3>
+                        <Books stateParent = {this.state}/>
+                    </Grid>
 
-                <h3>Add Book</h3>
-                <Button onClick={(e)=>this.doApi_crud_create_book_JWT_fetch(e)} variant={`contained`}>DO API</Button>
-                <h3>Add Product</h3>
-                <Button onClick={(e)=>this.doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e)} variant={`contained`}>DO API</Button>
-                <h3>Add Order</h3>
-                <Button onClick={(e)=>this.doApi_WooCommerce_Order(e)} variant={`contained`}>DO API</Button>
-                <br></br>
-                <br></br>
-                <h3>Add User</h3>
-                <Button onClick={(e)=>this.onClick_crud_create_WordPress_User(e)} variant={`contained`}>DO API</Button>
+                    <Grid item container spacing={10} p={1}>
+                        <h3>Add Book</h3>
+                        <Button onClick={(e)=>this.doApi_crud_create_book_JWT_fetch(e)} variant={`contained`}>DO API</Button>
+                    </Grid>
+
+                    <Grid item container spacing={10} p={1}>
+                        <h3>Add Product</h3>
+                        <Button onClick={(e)=>this.doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e)} variant={`contained`}>DO API</Button>
+                    </Grid>
+
+                    <Grid item container spacing={10} p={1}>
+                        <h3>Add Order</h3>
+                        <Button onClick={(e)=>this.doApi_WooCommerce_Order(e)} variant={`contained`}>DO API</Button>
+                    </Grid>
+
+                    <Grid item container spacing={10} p={1}>
+                        <h3>Add User</h3>
+                        <Button onClick={(e)=>this.onClick_crud_create_WordPress_User(e)} variant={`contained`}>DO API</Button>
+                    </Grid>
+
+                    <Grid item container spacing={10} p={1}>
+                        <h3>XA</h3>
+
+                        <Button
+                            // style={{width: '30ch', height: '10ch'}}
+                            variant="contained"
+                            component="label"
+                            onChange={(e)=>this.Filer1(e)}
+                        >
+                            Upload File
+                            <input
+
+                                type="file"
+                                accept=".doc,.docx,.txt"
+                                multiple={true}
+                                hidden
+
+                            />
+                        </Button>
+                    </Grid>
+
+                        <Button
+                          style={{width: '30ch', height: '10ch'}}
+                          variant="contained"
+                          component="label"
+                          onChange={(e)=>this.Filer2Media(e)}
+                        >
+                            MEDIA CREATE - UPLOAD
+                            <input
+
+                              type="file"
+                              // accept=".doc,.docx,.txt"
+                              multiple={true}
+                              hidden
+
+                            />
+                        </Button>
+                </Grid>
 
                 <br></br>
                 <br></br>
                 <Button
-                    // style={{width: '30ch', height: '10ch'}}
+                    style={{width: '30ch', height: '10ch'}}
                     variant="contained"
                     component="label"
-                    onChange={(e)=>this.Filer1(e)}
+                    onClick={(e)=>this.crud_read_Media(e)}
                 >
-                    Upload File
-                    <input
-
-                        type="file"
-                        accept=".doc,.docx,.txt"
-                        multiple={true}
-                        hidden
-
-                    />
+                    MEDIA READ
                 </Button>
-
-                <br></br>
-                <br></br>
-                <Button
-                  style={{width: '30ch', height: '10ch'}}
-                  variant="contained"
-                  component="label"
-                  onChange={(e)=>this.Filer2Media(e)}
-                >
-                    MEDIA
-                    <input
-
-                      type="file"
-                      // accept=".doc,.docx,.txt"
-                      multiple={true}
-                      hidden
-
-                    />
-                </Button>
-
-
 
 
                 {/*<h5>{JSON.stringify(this.state)}</h5>*/}
