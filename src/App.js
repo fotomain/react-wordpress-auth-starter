@@ -1,7 +1,4 @@
 
-
-// yarn start
-
 //react-wordpress-woocommerce-rest-api-jwt-oauth-starter
 //WORDPRESS JWT SERVER = JWT Authentication for WP REST API
 //                       By Enrique Chavez
@@ -19,6 +16,8 @@
 // yarn  install
 // ionic build prod; ionic cap sync; ionic serve
 
+
+// yarn start
 import React, {Component} from 'react'
 
 import axios from 'axios';
@@ -37,6 +36,7 @@ import {
 } from './api_keys';
 
 import Book2Display from './Book2Display'
+
 // yarn  install; yarn start
 // ionic build prod; ionic cap sync; ionic serve
 
@@ -48,7 +48,7 @@ import Book2Display from './Book2Display'
 
 import Books from './Books'
 
-import {Button, Grid} from '@mui/material';
+import {Button, Grid, Box} from '@mui/material';
 
 // const { ClientCredentials, ResourceOwnerPassword, AuthorizationCode } = require('simple-oauth2');
 
@@ -548,95 +548,12 @@ class App extends React.Component {
 
                     var text = e.target.result;
                     //do something with text
-                    // !!! document.body.innerHTML = text;
+                    //=== document.body.innerHTML = text;
                     console.log("============ f.name")
                     console.log(f.name)
-                    // console.log(text)
 
-                    // var arrfile_Lines = text.split('\n');
-                    var arrfile_Lines = text.split(/(?<=[\n])/g);
-                    // var arrfile_Lines = text.split(/(\r\n|\n|\r)/gm);
+                    f_callback({p_arr_lexemas:{}})
 
-                    var file_Text = arrfile_Lines.join(' ');
-
-                    console.log("========== replace start ")
-
-                    file_Text = file_Text.replace(/(\r)/gm, "");
-                    // file_Text = file_Text.replace(/(\r\n|\n|\r)/gm, "");
-                    file_Text = file_Text.replace(" т. e. ", " т.e. ")
-                    file_Text = file_Text.replace("--", "-")
-                    file_Text = file_Text.replace("--", "-")
-                    file_Text = file_Text.replace("  ", " ")
-                    file_Text = file_Text.replace("   ", " ")
-                    file_Text = file_Text.replace("    ", " ")
-                    file_Text = file_Text.replace("     ", " ")
-                    console.log("========== replace finish ")
-
-                    //
-                    // console.log(file_NoLineBreaks)
-
-
-                    // var arrfile_NoLineBreaks = file_NoLineBreaks.split(/[.!?]+/);
-                    var arrfile_Sentences = file_Text.split(/(?<=[.!?])/g);
-
-                    var init1=0;
-                    var init2=0;
-                    var lexema_n=1;
-                    var arr_lexemas=[]
-                    arrfile_Sentences.reduce((tt,el,ii,aa)=>{
-
-                            // console.log("==========")
-                            // console.log(el)
-                            // console.log("========== split" + ii)
-
-                        var e1 = el.split(/(?=[\n .,:;!?])|(?<=[\n .,:;!?])/g);
-
-                        e1.reduce((tt,ee,ii,aa)=>{
-
-                            const tL = 'lexema_'+lexema_n++
-
-                            if(-1!=ee.indexOf("\n")){
-                                // console.log("\\n --- " + tL)
-                            }
-
-                            arr_lexemas.push({lexema_n:tL, lexema_text:ee});
-
-                        },init2)
-
-                        // e1 = e1.map(el2=>{return el2.replace(' ','')})
-
-                        //split492
-                        // e1 = e1.filter(el2=> {
-                        //     if (el2 == '\r') {
-                        //         return false
-                        //     }
-                        //     else
-                        //         return true
-                        // })
-
-                        // if(this.state.mode_degug_log) {
-                        //     console.log(e1)
-                        // }
-
-                    },init1)
-                    // if(this.state.mode_degug_log) {
-                        console.log("=== arr_lexemas")
-                        console.log(arr_lexemas)
-                    // }
-
-                    // var res_text=''
-                    // arr_lexemas.reduce((tt,ee,ii,aa)=>{
-                    //     if(-1!=ee.lexema_text.indexOf("\n")){
-                    //         // console.log()
-                    //     }
-                    // },init2)
-                    // console.log("=== res_text")
-                    // console.log(res_text)
-
-                    f_callback({p_arr_lexemas:arr_lexemas})
-                    // console.log(arrfile_NoLineBreaks)
-
-                //    TODO CHECK -> (!) (?) IN TEXT
 
                 };
             })(file1);
@@ -651,7 +568,7 @@ class App extends React.Component {
         console.log("=== Filer2Media")
 
         const loaded_media_array = await this.crud_read_media({
-            p_id:100
+            p_id:75
         })
 
         console.log("=== loaded_media_array")
@@ -706,35 +623,41 @@ class App extends React.Component {
 
             <div>
                 <div>class App</div>
+                <Box sx={{ flexGrow: 1 }}>
 
                 {/*style={{display}*/}
-                <Grid container direction={`row`} justifyContent={`spaceBetween`} alignItems={`center`} >
-                    <Grid item container spacing={10} p={1}>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                {/*<Grid container*/}
+                {/*      direction={`row`}*/}
+                {/*      alignItems={`center`}*/}
+                {/*      justifyContent={`center`}*/}
+                {/*>*/}
+                    <Grid item xs={2} sm={4} md={4} key={1}>
                         <h3>Books</h3>
                         <Books stateParent = {this.state}/>
                     </Grid>
 
-                    <Grid item container spacing={10} p={1}>
+                    <Grid item xs={2} sm={4} md={4} key={2}>
                         <h3>Add Book</h3>
                         <Button onClick={(e)=>this.doApi_crud_create_book_JWT_fetch(e)} variant={`contained`}>DO API</Button>
                     </Grid>
 
-                    <Grid item container spacing={10} p={1}>
+                    <Grid item xs={2} sm={4} md={4} key={3}>
                         <h3>Add Product</h3>
                         <Button onClick={(e)=>this.doApi_crud_create_PRODUCT_JWT_fetch_WooCommerce(e)} variant={`contained`}>DO API</Button>
                     </Grid>
 
-                    <Grid item container spacing={10} p={1}>
+                    <Grid item xs={2} sm={4} md={4} key={4}>
                         <h3>Add Order</h3>
                         <Button onClick={(e)=>this.doApi_WooCommerce_Order(e)} variant={`contained`}>DO API</Button>
                     </Grid>
 
-                    <Grid item container spacing={10} p={1}>
+                    <Grid item xs={2} sm={4} md={4} key={5}>
                         <h3>Add User</h3>
                         <Button onClick={(e)=>this.onClick_crud_create_WordPress_User(e)} variant={`contained`}>DO API</Button>
                     </Grid>
 
-                    <Grid item container spacing={10} p={1}>
+                    <Grid item xs={2} sm={4} md={4} key={6}>
                         <h3>XA</h3>
 
                         <Button
@@ -755,6 +678,7 @@ class App extends React.Component {
                         </Button>
                     </Grid>
 
+                    <Grid item xs={2} sm={4} md={4} key={7}>
                         <Button
                           style={{width: '30ch', height: '10ch'}}
                           variant="contained"
@@ -771,6 +695,7 @@ class App extends React.Component {
 
                             />
                         </Button>
+                    </Grid>
                 </Grid>
 
                 <br></br>
@@ -784,6 +709,7 @@ class App extends React.Component {
                     MEDIA READ
                 </Button>
 
+                </Box>
 
                 {/*<h5>{JSON.stringify(this.state)}</h5>*/}
 
